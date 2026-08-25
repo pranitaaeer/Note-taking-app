@@ -95,15 +95,22 @@ export async function GET(
      * the same one-time link.
      */
     if (shareLink.shareType === "ONE_TIME") {
-      const result = await prisma.shareLink.updateMany({
-        where: {
-          id: shareLink.id,
-          usedAt: null,
-          revokedAt: null,
-        },
-        data: {
-          usedAt: new Date(),
-        },
+      const result = await prisma.$transaction(async (tx) => {
+        const claimed = await tx.shareLink.updateMany({
+          where: {
+            id: shareLink.id,
+            usedAt: null,
+            revokedAt: null,
+          },
+          data: {
+            usedAt: new Date(),
+            viewCount: {
+              increment: 1,
+            },
+          },
+        });
+
+        return claimed;
       });
 
       if (result.count !== 1) {
@@ -115,10 +122,17 @@ export async function GET(
           { status: 410 }
         );
       }
+
+      return NextResponse.json({
+        success: true,
+        requiresPassword: false,
+        note: shareLink.note,
+        viewCount: shareLink.viewCount + 1,
+      });
     }
 
-    // Count only successful public access
-    await prisma.shareLink.update({
+    // Normal public time-based link
+    const updatedShare = await prisma.shareLink.update({
       where: {
         id: shareLink.id,
       },
@@ -133,7 +147,7 @@ export async function GET(
       success: true,
       requiresPassword: false,
       note: shareLink.note,
-      viewCount: shareLink.viewCount + 1,
+      viewCount: updatedShare.viewCount,
     });
   } catch (error) {
     console.error("Share link access error:", error);

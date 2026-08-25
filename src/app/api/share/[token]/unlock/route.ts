@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
 import { prisma } from "@/lib/prisma";
-import {unlockSchema} from "@/lib/validation/share.schema"
+import { unlockSchema } from "@/lib/validation/share.schema"
 
 
 
@@ -160,10 +160,19 @@ export async function POST(
         });
 
         if (consumed.count !== 1) {
-          return false;
+          return null;
         }
 
-        return true;
+        const updated = await tx.shareLink.findUnique({
+          where: {
+            id: shareLink.id,
+          },
+          select: {
+            viewCount: true,
+          },
+        });
+
+        return updated;
       });
 
       if (!result) {
@@ -179,7 +188,7 @@ export async function POST(
       return NextResponse.json({
         success: true,
         note: shareLink.note,
-        viewCount: 1,
+        viewCount: result.viewCount,
       });
     }
 
