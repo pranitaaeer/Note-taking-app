@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { createToken } from "@/lib/auth";
 
-const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(1, "Password is required"),
-});
+import {loginSchema} from "@/lib/validation/auth.schema"
+
+
 
 export async function POST(request: NextRequest) {
   try {

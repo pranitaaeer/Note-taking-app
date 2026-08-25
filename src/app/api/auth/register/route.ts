@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import {registerSchema} from "@/lib/validation/auth.schema"
 
-const registerSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters"),
-});
+
 
 export async function POST(request: NextRequest) {
   try {

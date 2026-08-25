@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
+import {unlockSchema} from "@/lib/validation/share.schema"
 
-const unlockSchema = z.object({
-  accessKey: z.string().min(1, "Access key is required"),
-});
+
 
 export async function POST(
   request: NextRequest,

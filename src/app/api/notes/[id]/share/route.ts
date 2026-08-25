@@ -1,38 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import bcrypt from "bcryptjs";
-import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserId } from "@/lib/get-current-user";
 
-const createShareSchema = z
-  .object({
-    shareType: z.enum(["ONE_TIME", "TIME_BASED"]),
-    accessType: z.enum(["PUBLIC", "PASSWORD"]),
-    expiresAt: z.string().datetime().optional(),
-  })
-  .superRefine((data, ctx) => {
-    if (data.shareType === "TIME_BASED" && !data.expiresAt) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["expiresAt"],
-        message: "Expiry date/time is required for time-based links",
-      });
-    }
-
-    if (data.expiresAt) {
-      const expiryDate = new Date(data.expiresAt);
-
-      if (expiryDate <= new Date()) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["expiresAt"],
-          message: "Expiry date/time must be in the future",
-        });
-      }
-    }
-  });
+import {createShareSchema} from "@/lib/validation/share.schema"
 
 export async function POST(
   request: NextRequest,

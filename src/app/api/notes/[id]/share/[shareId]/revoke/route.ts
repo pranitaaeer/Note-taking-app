@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUserId } from "@/lib/get-current-user";
 
 export async function POST(
-  request: Request,
+  _: Request,
   {
     params,
   }: {
