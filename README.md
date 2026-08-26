@@ -377,7 +377,7 @@ For a production-scale application, I would additionally implement:
 
 - **Live Demo:** `https://note-taking-app-fawn-one.vercel.app/`
 - **GitHub:** `https://github.com/pranitaaeer/Note-taking-app.git`
-- **Demo Video:** `https://3jps3tx5py.ufs.sh/f/ZLv6Zyfgn4WcDQnBOmUfEGpTv5mg7tjycB2RMYkZNqazL1OU`
+- **Demo Video:** `https://3jps3tx5py.ufs.sh/f/ZLv6Zyfgn4Wcl2A3xu1LwHAhSiQ0ODRVXtuxCM39J6cKEv8o`
 
 ---
 
