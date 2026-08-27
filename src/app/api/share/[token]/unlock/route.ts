@@ -132,15 +132,7 @@ export async function POST(
       );
     }
 
-    /*
-     * ONE-TIME LINK
-     *
-     * We consume the link and increment the view count
-     * inside one transaction.
-     *
-     * The conditional usedAt: null makes the operation atomic:
-     * only one concurrent request can successfully consume it.
-     */
+    
     if (shareLink.shareType === "ONE_TIME") {
       const now = new Date();
 
@@ -192,11 +184,7 @@ export async function POST(
       });
     }
 
-    /*
-     * TIME-BASED PASSWORD LINK
-     *
-     * Valid password = successful view.
-     */
+    
     const updatedShare = await prisma.shareLink.update({
       where: {
         id: shareLink.id,
